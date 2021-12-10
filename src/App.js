@@ -1,7 +1,30 @@
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
+// 76561198350848550
+
+const App = () => {
+  const [playerId, setPlayerId] = useState('');
+  const [player, setPlayer] = useState('');
+  const getPlayer = (playerId) => {
+    if(!playerId) return;
+    fetch(`https://api.opendota.com/api/players/${playerId}`).then(
+    (res) => {
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+      return res.json();
+    }).then((data) => {
+      setPlayer(data);
+    })
+    .catch(err => {
+      throw new Error(err)
+    });
+  };
+
+  console.log(playerId);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -9,15 +32,23 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+        <form>
+          <label>Player ID:</label>
+          <br />
+          <input 
+            name='playerId' 
+            type='text'
+            value={playerId}
+            onChange={e => setPlayerId(e.target.value)}
+          />
+        </form>
+        <button
+          onClick={getPlayer(playerId)}
         >
-          Learn React
-        </a>
+          Get Player
+        </button>
       </header>
+      <p>{Object.keys(player).join(' ')}</p>
     </div>
   );
 }
