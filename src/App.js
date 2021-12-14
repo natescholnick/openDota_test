@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PlayerCard from './components/PlayerCard';
 import logo from './logo.svg';
 import './App.css';
 
@@ -6,7 +7,7 @@ import './App.css';
 // 76561198067021926
 // 76561197960265728
 
-// 390582822 cabbeg mage
+// 390582822 cabeezy
 // 106756198 citius
 
 const App = () => {
@@ -14,7 +15,6 @@ const App = () => {
   const [player, setPlayer] = useState('');
   const getPlayer = (playerId) => {
     if(!playerId) return;
-    // fetch(`/players/${playerId}`).then(
     fetch(`/players/${playerId}`).then(
     (res) => {
       if (!res.ok) {
@@ -30,6 +30,8 @@ const App = () => {
     });
   };
 
+  console.log(playerId);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -37,7 +39,10 @@ const App = () => {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        <form>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          getPlayer(playerId);
+        }}>
           <label>Player ID:</label>
           <br />
           <input 
@@ -46,22 +51,10 @@ const App = () => {
             value={playerId}
             onChange={e => setPlayerId(e.target.value)}
           />
+          <input className="getPlayerButton" type='submit' value="Get Player" />
         </form>
-        <button
-          onClick={() => getPlayer(playerId)}
-        >
-          Get Player
-        </button>
       </header>
-      {player && (
-      <div className="playerInfo">
-        <img src={player.profile.avatarfull} alt="player avatar" />
-        <a target="_blank" rel="noreferrer" href={player.profile.profileurl} className="playerName">
-          <h2>{player.profile.personaname}</h2>
-        </a>
-        <p className="mmr">MMR: {player.mmr_estimate.estimate}</p>
-      </div>
-      )}
+      <PlayerCard player={player} />
     </div>
   );
 }
